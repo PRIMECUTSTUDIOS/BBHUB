@@ -13,15 +13,10 @@ export default async function LoHicimosProject(){
  <p style={{fontSize:13,color:'#bfc7ce'}}>Proyecto privado de preproducción · Master de referencia aprox. 03:48 · 17 viñetas conceptuales · Minutaje sujeto a ajuste fino en Resolve</p>
  </div>
  <section style={{margin:'18px 0',padding:18,background:'#1a2d22',border:'1px solid #4d865a',borderRadius:12}}><h2 style={{margin:'0 0 8px'}}>Edición colaborativa disponible en la web</h2><p>Gestiona directamente las tomas, las notas, la paleta y el vestuario; invita a otros colaboradores sin darles acceso al resto de Prime Cut Studios.</p><Link className="btn btn-small" href="/admin/projects/lo-hicimos/edit">Abrir editor y gestionar accesos</Link></section>
- <section style={{margin:'28px 0',display:'flex',flexWrap:'wrap',gap:12}}>
- <a href="https://drive.google.com/drive/folders/1jR_v5GxDpeylVM5xwEP22Lhv-TJXRlmu" target="_blank" rel="noopener noreferrer" style={{padding:'12px 16px',background:'#d98d31',borderRadius:10,color:'#101114',fontWeight:700}}>Carpeta colaborativa en Drive ↗</a>
- <a href="https://docs.google.com/document/d/1C7SkzTkbohHejoM-OI8qY7F6XqvRhmU6Ro09G_wjgMs/edit" target="_blank" rel="noopener noreferrer" style={{padding:'12px 16px',border:'1px solid #7e6038',borderRadius:10,color:'#ffcc87'}}>Shotlist editable ↗</a>
- <a href="https://docs.google.com/document/d/1PYjUmc408vAzRAbZoRf8pKy7VpB7-cJSm24P3uPxIMg/edit" target="_blank" rel="noopener noreferrer" style={{padding:'12px 16px',border:'1px solid #7e6038',borderRadius:10,color:'#ffcc87'}}>Storyboard editable ↗</a>
- <a href="https://docs.google.com/document/d/1T4oP9ZwZAWthNHFtUgBfBlrIqiIZIiZornGLBazvRO0/edit" target="_blank" rel="noopener noreferrer" style={{padding:'12px 16px',border:'1px solid #7e6038',borderRadius:10,color:'#ffcc87'}}>Vestuario y colores ↗</a>
- <a href="https://docs.google.com/document/d/1KR0gYzmq48nQvC_572FgJEs-mM4R4ph5-KVn5Nlov2s/edit" target="_blank" rel="noopener noreferrer" style={{padding:'12px 16px',border:'1px solid #7e6038',borderRadius:10,color:'#ffcc87'}}>Notas y aprobaciones ↗</a>
- </section>
+ <section style={{margin:'18px 0',display:'flex',gap:12}}><Link className="btn" href="/admin/projects/lo-hicimos/edit">Editar proyecto, subir fotos y gestionar colaboradores</Link></section>
+ 
  <section style={{border:'1px solid #25313f',padding:20,borderRadius:12,marginBottom:25}}>
- <h2>Equipo externo y permisos</h2><p style={{color:'#b8c3cd'}}>Este panel solo lo puede abrir un administrador de Prime Cut Studios. Para invitar artistas, vestuaristas y productores, comparte únicamente esta carpeta de Drive con sus correos identificados y el permiso mínimo necesario: Editor, Comentador o Lector. No compartir la contraseña de administración ni habilitar edición pública anónima.</p>
+ <h2>Equipo externo y permisos</h2><p style={{color:'#b8c3cd'}}>Este panel solo lo puede abrir un administrador de Prime Cut Studios. Invita a artistas, vestuaristas y productores desde el editor de este mismo sitio. Los enlaces son privados y exclusivos de Lo Hicimos; asigna acceso de Editor o Solo lectura. No compartas la contraseña administrativa.</p>
  <h3>Paleta en revisión</h3><div style={{display:'flex',gap:9,flexWrap:'wrap'}}>{[['#101015','Carbón'],['#D99132','Ámbar'],['#F0ECE6','Marfil'],['#1D3336','Petróleo'],['#1E283F','Azul noche']].map(([hex,name])=><div key={hex} style={{minWidth:100}}><div style={{width:100,height:45,background:hex,border:'1px solid #747474',borderRadius:8}}/><small>{name} {hex}</small></div>)}</div>
  </section>
  <h2 style={{fontSize:30}}>Storyboard ilustrado + shotlist</h2><p style={{color:'#aeb7c2'}}>Diagramas ilustrativos de encuadre, no fotografías del rodaje. La selección de imágenes de locación suministrada por el cliente se administra por separado.</p>
