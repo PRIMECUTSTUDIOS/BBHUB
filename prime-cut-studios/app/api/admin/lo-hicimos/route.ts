@@ -28,7 +28,9 @@ export async function POST(req:Request){
  const current=await rest<Block[]>('pc_project_book_blocks?project_id=eq.'+PROJECT_ID+'&id=eq.'+id+'&select=id,kind,title,body,metadata,revision,position,project_id&limit=1');
  const block=current[0];if(!block)return Response.json({error:'Not found'},{status:404});
  if(block.revision!==revision)return Response.json({error:'Alguien actualizó esta sección. Recarga antes de guardar.'},{status:409});
- const meta={...(block.metadata||{}),colors:colors.map((c:{name:string;hex:string})=>({name:String(c.name).slice(0,50),hex:c.hex}))};
+ const links=data.links;
+ if(!Array.isArray(links)||links.length>24||links.some((x:unknown)=>typeof x!=='object'||!x||!('url' in x)||!('label' in x)||!/^pc-image:lo-hicimos\\/[0-9a-f-]{36}\\/[0-9a-f-]{36}\\.(jpg|png|webp)$/i.test(String((x as {url:string}).url))||String((x as {label:string}).label).length>100))return Response.json({error:'Invalid image references'},{status:400});
+ const meta={...(block.metadata||{}),links:links.map((x:{url:string;label:string})=>({url:x.url,label:x.label})),colors:colors.map((c:{name:string;hex:string})=>({name:String(c.name).slice(0,50),hex:c.hex}))};
  const result=await rest<boolean>('rpc/pc_save_project_book',{method:'POST',body:JSON.stringify({p_block_id:id,p_project_id:PROJECT_ID,p_expected_revision:revision,p_input:{kind:block.kind,title,body,metadata:meta,client_visible:false,requires_approval:false},p_actor_id:null})});
  if(!result)return Response.json({error:'La sección cambió. Recarga antes de guardar.'},{status:409});
  return Response.json({ok:true,revision:revision+1});
