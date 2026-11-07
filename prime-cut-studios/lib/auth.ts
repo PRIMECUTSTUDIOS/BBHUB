@@ -30,8 +30,25 @@ export async function adminAuthenticated(){
 }
 export async function setAdminSession(value:string){(await cookies()).set(COOKIE,value,{httpOnly:true,secure:process.env.NODE_ENV==='production',sameSite:'strict',path:'/',maxAge:MAX_AGE});}
 export async function clearAdminSession(){(await cookies()).delete(COOKIE);}
+// On Vercel the request URL may identify an internal deployment host, while
+// browser Origin correctly identifies the public custom domain. Validate against
+// the exact official origins, never arbitrary forwarded-host values.
+const publicOrigins=new Set([
+ 'https://primecutstudiostx.com',
+ 'https://www.primecutstudiostx.com',
+ 'https://prime-cut-studios.vercel.app',
+ 'https://prime-cut-studios-git-main-bdg-dev.vercel.app'
+]);
 export function requestIsSameOrigin(request:Request){
-  const origin=request.headers.get('origin');if(!origin) return false;
-  try{return new URL(origin).host===new URL(request.url).host;}catch{return false;}
+  const value=request.headers.get('origin');
+  if(!value||value==='null')return false;
+  try{
+    const origin=new URL(value);
+    if(origin.origin!==value||origin.username||origin.password)return false;
+    if(publicOrigins.has(origin.origin))return true;
+    // Allow same-host requests from preview deployments, but not an unrelated origin.
+    const target=new URL(request.url);
+    return origin.origin===target.origin && (process.env.NODE_ENV!=='production'||origin.hostname.endsWith('.vercel.app'));
+  }catch{return false;}
 }
 export function safeIp(request:Request){return request.headers.get('x-real-ip')||request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||'unknown';}
