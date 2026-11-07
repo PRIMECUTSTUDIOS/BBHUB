@@ -8,9 +8,18 @@ export function LoHicimosEditor({initial,token='',admin=false,role='editor'}:Pro
  const update=(delta:Partial<Block>)=>setBlocks(prev=>prev.map((x,i)=>i===active?{...x,...delta}:x));
  const save=async()=>{
   if(!b||!edit)return;setBusy(true);setMessage('');
-  try{const r=await fetch('/api/admin/lo-hicimos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',token,id:b.id,title:b.title,body:b.body,colors:b.metadata?.colors||[],revision:b.revision})});const j=await r.json();
+  try{const r=await fetch('/api/admin/lo-hicimos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',token,id:b.id,title:b.title,body:b.body,colors:b.metadata?.colors||[],links:b.metadata?.links||[],revision:b.revision})});const j=await r.json();
   if(!r.ok)throw Error(j.error||'Error al guardar');
   update({revision:j.revision});setMessage('Cambios guardados y compartidos con el equipo.');}catch(e){setMessage(e instanceof Error?e.message:'Error');}finally{setBusy(false);}
+ };
+ const upload=async(file:File)=>{
+  if(!b||!edit)return;setBusy(true);setMessage('');
+  try{const form=new FormData();form.set('file',file);form.set('token',token);form.set('blockId',b.id);form.set('revision',String(b.revision));
+   const r=await fetch('/api/admin/lo-hicimos/image',{method:'POST',body:form});const j=await r.json();
+   if(!r.ok)throw Error(j.error||'Error al subir la imagen');
+   update({revision:j.revision,metadata:{...b.metadata,links:[...(b.metadata?.links||[]),j.link]}});
+   setMessage('Referencia visual subida y guardada en el proyecto.');
+  }catch(e){setMessage(e instanceof Error?e.message:'Error al subir');}finally{setBusy(false);}
  };
  const invite=async()=>{
   setBusy(true);setMessage('');try{const r=await fetch('/api/admin/lo-hicimos',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'invite',email:inviteEmail,role:inviteRole})});const j=await r.json();if(!r.ok)throw Error(j.error||'Error');setInviteLink(location.origin+j.path);setMessage('Invitación creada. Copia este enlace y envíalo de forma privada al colaborador.');}catch(e){setMessage(e instanceof Error?e.message:'Error');}finally{setBusy(false);}
@@ -39,6 +48,17 @@ export function LoHicimosEditor({initial,token='',admin=false,role='editor'}:Pro
  <span style={{position:'absolute',bottom:10,left:14,color:'#f1c087',fontSize:12}}>REFERENCE FRAME · {b.kind.toUpperCase()}</span></div>
  <label style={{display:'block',marginBottom:7}}>Título</label><input style={field} disabled={!edit} maxLength={160} value={b.title} onChange={e=>update({title:e.target.value})}/>
  <label style={{display:'block',margin:'17px 0 7px'}}>Descripción, tomas, vestuario y notas</label><textarea style={{...field,minHeight:235,resize:'vertical',lineHeight:1.6}} disabled={!edit} maxLength={20000} value={b.body} onChange={e=>update({body:e.target.value})}/>
+ <div style={{marginTop:20,borderTop:'1px solid #34414d',paddingTop:12}}>
+ <h3>Imágenes y referencias de esta escena</h3>
+ <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(145px,1fr))',gap:12}}>
+ {(b.metadata?.links||[]).filter(x=>x.url.startsWith('pc-image:')).map((x,i)=><div key={x.url} style={{border:'1px solid #465360',borderRadius:9,padding:8}}>
+ <img src={'/api/admin/lo-hicimos/image?path='+encodeURIComponent(x.url.slice(9))+'&token='+encodeURIComponent(token)} alt={x.label} style={{width:'100%',height:125,objectFit:'cover',borderRadius:6}} referrerPolicy="no-referrer"/>
+ <p style={{fontSize:12,overflowWrap:'anywhere'}}>{x.label}</p>
+ {edit&&<button type="button" onClick={()=>update({metadata:{...b.metadata,links:(b.metadata?.links||[]).filter(z=>z.url!==x.url)}})} style={{fontSize:12}}>Quitar referencia (guardar para aplicar)</button>}</div>)}
+ </div>
+ {edit&&<label style={{display:'block',marginTop:14,color:'#f0c184'}}>Adjuntar foto desde tu computadora (JPG, PNG o WebP; hasta 6 MB)
+ <input type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} style={{display:'block',marginTop:8}} onChange={e=>{const f=e.target.files?.[0];if(f)void upload(f);e.target.value='';}}/></label>}
+ </div>
  {b.kind==='palette'&&<div style={{marginTop:15}}><h3>Paleta de colores</h3>{(b.metadata?.colors||[]).map((c,i)=><div key={i} style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
  <input type="color" value={c.hex} disabled={!edit} onChange={e=>{const colors=[...(b.metadata?.colors||[])];colors[i]={...c,hex:e.target.value};update({metadata:{...b.metadata,colors}});}}/>
  <input aria-label="Nombre del color" style={{...field,maxWidth:260}} value={c.name} disabled={!edit} onChange={e=>{const colors=[...(b.metadata?.colors||[])];colors[i]={...c,name:e.target.value};update({metadata:{...b.metadata,colors}});}}/>
