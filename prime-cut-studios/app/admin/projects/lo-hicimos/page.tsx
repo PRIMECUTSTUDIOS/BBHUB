@@ -12,6 +12,7 @@ export default async function LoHicimosProject(){
  <p style={{fontSize:17}}>Producción Good Demon · Estado: APROBADO PARA GRABACIÓN · Fecha de rodaje pendiente de confirmar</p>
  <p style={{fontSize:13,color:'#bfc7ce'}}>Proyecto privado de preproducción · Master de referencia aprox. 03:48 · 17 viñetas conceptuales · Minutaje sujeto a ajuste fino en Resolve</p>
  </div>
+ <section style={{margin:'18px 0',padding:18,background:'#1a2d22',border:'1px solid #4d865a',borderRadius:12}}><h2 style={{margin:'0 0 8px'}}>Edición colaborativa disponible en la web</h2><p>Gestiona directamente las tomas, las notas, la paleta y el vestuario; invita a otros colaboradores sin darles acceso al resto de Prime Cut Studios.</p><Link className="btn btn-small" href="/admin/projects/lo-hicimos/edit">Abrir editor y gestionar accesos</Link></section>
  <section style={{margin:'28px 0',display:'flex',flexWrap:'wrap',gap:12}}>
  <a href="https://drive.google.com/drive/folders/1jR_v5GxDpeylVM5xwEP22Lhv-TJXRlmu" target="_blank" rel="noopener noreferrer" style={{padding:'12px 16px',background:'#d98d31',borderRadius:10,color:'#101114',fontWeight:700}}>Carpeta colaborativa en Drive ↗</a>
  <a href="https://docs.google.com/document/d/1C7SkzTkbohHejoM-OI8qY7F6XqvRhmU6Ro09G_wjgMs/edit" target="_blank" rel="noopener noreferrer" style={{padding:'12px 16px',border:'1px solid #7e6038',borderRadius:10,color:'#ffcc87'}}>Shotlist editable ↗</a>
